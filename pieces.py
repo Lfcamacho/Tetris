@@ -34,10 +34,10 @@ class Piece:
         self.number = random.randint(0,6)
         self.shape = shapes[self.number]
         self.color = COLORS[self.number]
-        self.x = 0
+        self.x = 2
         self.y = 0
-        self.x_center = SIZES[self.number][0]
-        self.y_center = SIZES[self.number][1]
+        self.x_center = self.x + SIZES[self.number][0]
+        self.y_center = self.y + SIZES[self.number][1]
         self.size_x = SIZES[self.number][2]
         self.size_y = SIZES[self.number][3]
 

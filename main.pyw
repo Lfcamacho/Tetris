@@ -25,22 +25,17 @@ class Tetris:
                 self.run = False
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP :
+                if event.key == pygame.K_UP and self.valid_move() == True:
                     self.erase_unlocked_blocks()
                     self.piece.rotate_piece(self.board)
-                    self.update()
-                    print(self.piece.x, self.piece.y)
         
         keys = pygame.key.get_pressed()
         if keys[pygame.K_DOWN]:
             self.move = [0,1]
-            self.update()
         if keys[pygame.K_LEFT] and self.piece.x > 0:
             self.move = [-1,0]
-            self.update()
         if keys[pygame.K_RIGHT] and self.piece.x < (COLUMNS - self.piece.size_x):
             self.move = [1,0]
-            self.update()
     
     # Redraws each element in game window
     def draw_window(self):
@@ -58,6 +53,15 @@ class Tetris:
     def new_piece(self):
         self.piece = Piece()
         self.piece.create_blocks(self.board)
+
+    def valid_move(self):
+        y = self.piece.y_center - self.piece.y 
+        x = self.piece.size_x - self.piece.x_center - self.piece.x 
+        if y > self.piece.x_center or (self.piece.size_y - y) > (COLUMNS - self.piece.x_center):
+            return False
+        #if x > self.piece.y_center:
+            #return False
+        return True
 
     def collision(self):
         if self.piece.y + self.piece.size_y == ROWS:
@@ -97,7 +101,6 @@ class Tetris:
         self.erase_unlocked_blocks()
         self.piece.update_blocks(self.board, self.move)
         self.move = [0,0]
-        self.print_board()
  
                      
 
@@ -118,7 +121,7 @@ while tetris.run:
             tetris.new_piece()
 
     tetris.events()
-    #tetris.update()
+    tetris.update()
     tetris.draw_window()
     pygame.display.update()
         
