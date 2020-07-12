@@ -2,11 +2,11 @@ from settings import *
 import random
 import numpy as np
 
-# Piece shapes
-S = [[0,2,1],
+# Piece shapes. Number 2 is the position where the piece rotates (center of the piece)
+S = [[0,1,1],
      [1,1,0]]
     
-Z = [[1,2,0],
+Z = [[1,1,0],
      [0,1,1]]
 
 I = [[1,2,1,1]]
@@ -79,7 +79,6 @@ class Piece:
                     self.x = self.x_center - x
                     self.y = self.y_center - y
             
-
 
 class Block:
     def __init__(self, x, y, color):
