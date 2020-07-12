@@ -4,10 +4,10 @@ import numpy as np
 
 # Piece shapes. Number 2 is the position where the piece rotates (center of the piece)
 S = [[0,1,1],
-     [1,1,0]]
+     [1,2,0]]
     
 Z = [[1,1,0],
-     [0,1,1]]
+     [0,2,1]]
 
 I = [[1,2,1,1]]
 
@@ -42,8 +42,7 @@ class Piece:
         self.size_y = SIZES[self.number][3]
 
     def create_blocks(self, board):
-        self.blocks = []
-        self.new_position()                  
+        self.blocks = []         
         x, y = self.x, self.y
         for row in self.shape:
             for number in row:
@@ -55,29 +54,34 @@ class Piece:
             x = self.x
             y += 1
     
-    def update_blocks(self, board, move):
-        self.x += move[0]
-        self.y += move[1]
-        self.x_center += move[0]
-        self.y_center += move[1]
+    def move_blocks(self, board, move_x, move_y):
+        self.x += move_x
+        self.y += move_y
+        self.x_center += move_x
+        self.y_center += move_y
         for block in self.blocks:
-            block.x += move[0]
-            block.y += move[1]
+            block.x += move_x
+            block.y += move_y
             board[block.y][block.x] = block
 
-    def rotate_piece(self, board):
-        rotated = np.array(self.shape, int)
-        rotated = np.rot90(rotated)
+    def update_rotation(self, shape, shape_x, shape_y):
+        self.shape = shape
+        self.x, self.y = shape_x, shape_y
         self.size_x, self.size_y = self.size_y, self.size_x
-        self.shape = rotated.tolist()
-        self.create_blocks(board)
 
-    def new_position(self):
-        for y, row in enumerate(self.shape):
+    def rotate_shape(self, shape):
+        rotated = np.array(shape)
+        rotated = np.rot90(rotated) 
+        return rotated.tolist() 
+
+    def new_position(self, shape):
+        for y, row in enumerate(shape):
             for x, number in enumerate(row):
                 if number == 2:
-                    self.x = self.x_center - x
-                    self.y = self.y_center - y
+                    pos_x = self.x_center - x
+                    pos_y = self.y_center - y
+                    return pos_x, pos_y
+        return self.x, self.y
             
 
 class Block:

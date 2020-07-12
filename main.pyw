@@ -3,7 +3,7 @@ from pygame.locals import *
 import os
 from settings import *
 from pieces import *
-from os import path
+import numpy as np
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tetris")
@@ -43,9 +43,9 @@ class Tetris:
                 self.run = False
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP and self.valid_rotation():
-                    self.erase_unlocked_blocks()
-                    self.piece.rotate_piece(self.board)             
+                self.erase_unlocked_blocks()
+                if event.key == pygame.K_UP and self.rotation():
+                    self.piece.create_blocks(self.board)            
         
         keys = pygame.key.get_pressed()
         if keys[pygame.K_DOWN] and not self.collision():
@@ -87,23 +87,26 @@ class Tetris:
             return False
         return True        
 
-    def valid_rotation(self):
-        y = self.piece.y_center - self.piece.y 
-        x = self.piece.x_center - self.piece.x
-        if (
-            y > self.piece.x_center or
-            (self.piece.size_y - y) > (COLUMNS - self.piece.x_center)
-        ):
-            return False
-
-        if (
-            (self.piece.size_x - x - 1) > self.piece.y_center or
-            x + 1 > (ROWS - self.piece.y_center)
-        ):
-            return False
-
+    def rotation(self):
+        shape = self.piece.rotate_shape(self.piece.shape)
+        shape_x, shape_y = self.piece.new_position(shape)
+        x, y = shape_x, shape_y
+        for row in shape:
+            for block in row:
+                if (x < 0 or 
+                    x > COLUMNS - 1 or
+                    y < 0 or 
+                    y > ROWS - 1 or
+                    self.board[y][x]
+                ):
+                    return False 
+                x += 1
+            y += 1
+            x = shape_x
+        self.piece.update_rotation(shape, shape_x, shape_y)
         return True
 
+    # Check if there is at the left or right side of current moving piece
     def side_collision(self, side):
         if side == "left":
             x = -1
@@ -162,16 +165,6 @@ class Tetris:
         print("game over")
         self.run = False
 
-    def print_board(self):
-        for i in self.board:
-            for j in i:
-                if j:
-                    print(1, end=" ")
-                else:
-                    print(0, end=" ")
-            print("")
-        print("")
-
     def erase_unlocked_blocks(self):
         for row in self.board:
             for block in row:
@@ -181,7 +174,7 @@ class Tetris:
     
     def update(self):
         self.erase_unlocked_blocks()
-        self.piece.update_blocks(self.board, [self.move_x, self.move_y])
+        self.piece.move_blocks(self.board, self.move_x, self.move_y)
         self.move_x = 0
         self.move_y = 0
  
