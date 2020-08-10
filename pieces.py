@@ -40,8 +40,9 @@ class Piece:
         self.y_center = self.y + SIZES[self.number][1]
         self.size_x = SIZES[self.number][2]
         self.size_y = SIZES[self.number][3]
+        self.create_blocks()
 
-    def create_blocks(self, board):
+    def create_blocks(self):
         self.blocks = []         
         x, y = self.x, self.y
         for row in self.shape:
@@ -49,10 +50,13 @@ class Piece:
                 if number:
                     block = Block(x, y, self.color)
                     self.blocks.append(block)
-                    board[y][x] = block
                 x += 1                
             x = self.x
             y += 1
+
+    def add_to_board(self, board):
+        for block in self.blocks:
+            board[block.y][block.x] = block
     
     def move_blocks(self, board, move_x, move_y):
         self.x += move_x
@@ -82,7 +86,13 @@ class Piece:
                     pos_y = self.y_center - y
                     return pos_x, pos_y
         return self.x, self.y
-            
+    
+    def draw_piece(self, WIN, x, y):
+        for block in self.blocks:
+            x2 = x + (block.x - self.x) * block.size + CONTAINER_SIZE_X / 2 - (self.size_x / 2) * block.size
+            y2 = y + (block.y - self.y) * block.size + CONTAINER_SIZE_Y / 2 - (self.size_y / 2) * block.size
+            block.draw_block(WIN, x2, y2)
+
 
 class Block:
     def __init__(self, x, y, color):
@@ -92,14 +102,8 @@ class Block:
         self.size = SQUARE_SIZE
         self.locked = False
 
-    def draw_block(self, WIN):
-        x_gui, y_gui = self.get_gui_position(self.x, self.y)
-        pygame.draw.rect(WIN, self.color, (x_gui, y_gui, self.size, self.size))
+    def draw_block(self, WIN, x_gui, y_gui):
+        pygame.draw.rect(WIN, BLACK, (x_gui, y_gui, self.size + 1, self.size + 1))
+        pygame.draw.rect(WIN, self.color, (x_gui + 1 , y_gui + 1, self.size - 1, self.size - 1))
 
-    def get_gui_position(self, x, y):
-        x = x * SQUARE_SIZE + GAME_POS_X
-        y = y * SQUARE_SIZE + GAME_POS_Y
-        return x, y
-
-        
-          
+         

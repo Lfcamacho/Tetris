@@ -1,7 +1,7 @@
 import pygame
 
 # Window size
-WIDTH = 400
+WIDTH = 490
 HEIGHT = 700
 
 # Size settings for game zone
@@ -9,13 +9,19 @@ SQUARE_SIZE = 30
 ROWS = 20
 COLUMNS = 10
 GAME_POS_X = 20
-GAME_POS_Y = 50
+GAME_POS_Y = 80
 GAME_WIDTH = SQUARE_SIZE * COLUMNS
 GAME_HEIGHT = SQUARE_SIZE * ROWS
 
 FPS = 15
 FALL_TIME = 350
 COLLISION_TIME = 500
+
+# Positions
+NEXT_POSITION_X = 340
+NEXT_POSITION_Y = 110
+CONTAINER_SIZE_X = 130
+CONTAINER_SIZE_Y = 80
 
 # Colors
 WHITE = (255,255,255)
@@ -27,8 +33,12 @@ ORANGE = (255,165,0)
 PURPLE = (128,0,128)
 YELLOW = (255,255,0)
 PINK = (255,192,203)
+GRAY = (230,230,230)
+LIGHT_BLUE = (135,206,250)
+DARK_PURPLE = (75,0,130)
 COLORS = [RED, BLUE, GREEN, PURPLE, YELLOW, ORANGE, PINK]
 
 # Fonts
 pygame.font.init()
-NUMBER_FONT = pygame.font.SysFont("comicsans", 35)
+TITLE_FONT = pygame.font.Font("fonts/dimis.ttf", 65)
+RIGHT_FONT = pygame.font.SysFont("fonts/forced.ttf", 25)
